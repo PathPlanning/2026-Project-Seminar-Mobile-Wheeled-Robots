@@ -1,0 +1,9 @@
+services:
+  ros2-base:
+    devices:
+      - /dev/dri:/dev/dri
+    group_add:
+      - "${VIDEO_GID}"
+      - "${RENDER_GID}"
+    environment:
+      LIBGL_ALWAYS_SOFTWARE: "0"

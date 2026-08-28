@@ -1,0 +1,33 @@
+services:
+  ros2-base:
+    image: ros2-base:jazzy
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        - ROS_DISTRO=${ROS_DISTRO:-jazzy}
+        - USER_ID=${USER_ID:-1000}
+        - GROUP_ID=${GROUP_ID:-1000}
+        - USERNAME=${USERNAME:-devuser}
+      target: ros2-base
+    stdin_open: true
+    tty: true
+    init: true
+    network_mode: host
+    ipc: host
+    privileged: True
+    env_file:
+      - path: .env
+        required: true
+      - path: .env.local
+        required: true
+    environment:
+      WEBOTS_SHARED_FOLDER: ${MAC_WEBOTS_SHARED_FOLDER}:${CONTAINER_WEBOTS_SHARED_FOLDER}
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ${HOST_XAUTHORITY:?HOST_XAUTHORITY is not set}:${XAUTHORITY}:ro
+      - ./src:/home/${USERNAME}/colcon_ws/src/:rw
+      - ${VM_WEBOTS_SHARED_FOLDER}:${CONTAINER_WEBOTS_SHARED_FOLDER}:rw
+    command: sleep infinity
+    extra_hosts:
+      - "host.docker.internal=${MAC_HOST_IP}"
