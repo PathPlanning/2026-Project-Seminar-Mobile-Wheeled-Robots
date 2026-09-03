@@ -1,1 +1,12 @@
 .env.local
+
+# LaTex build files
+*.snm
+*.vrb
+*.aux
+presentations/**/*.log
+*.nav
+*.out
+*.toc
+*.bbl
+*.blg
