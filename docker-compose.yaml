@@ -21,13 +21,9 @@ services:
         required: true
       - path: .env.local
         required: true
-    environment:
-      WEBOTS_SHARED_FOLDER: ${MAC_WEBOTS_SHARED_FOLDER}:${CONTAINER_WEBOTS_SHARED_FOLDER}
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - ${HOST_XAUTHORITY:?HOST_XAUTHORITY is not set}:${XAUTHORITY}:ro
-      - ./src:/home/${USERNAME}/colcon_ws/src/:rw
-      - ${VM_WEBOTS_SHARED_FOLDER}:${CONTAINER_WEBOTS_SHARED_FOLDER}:rw
+      - ./examples:/home/${USERNAME}/examples_ws/src/:rw
+      - ./practices:/home/${USERNAME}/practices_ws/src/:rw
     command: sleep infinity
-    extra_hosts:
-      - "host.docker.internal=${MAC_HOST_IP}"

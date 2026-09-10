@@ -1,0 +1,9 @@
+services:
+  ros2-base:
+    environment:
+      WEBOTS_SHARED_FOLDER: ${MAC_WEBOTS_SHARED_FOLDER}:${CONTAINER_WEBOTS_SHARED_FOLDER}
+    volumes:
+      - ${VM_WEBOTS_SHARED_FOLDER}:${CONTAINER_WEBOTS_SHARED_FOLDER}:rw
+    command: sleep infinity
+    extra_hosts:
+      - "host.docker.internal=${MAC_HOST_IP}"
