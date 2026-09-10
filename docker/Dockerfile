@@ -115,6 +115,10 @@ RUN chown ${USERNAME} /home/${USERNAME}/practices_ws/
 WORKDIR /home/${USERNAME}/practices_ws/
 COPY --chown=$USERNAME ./practices ./src
 
+
+
+
+
 WORKDIR /home/${USERNAME}/examples_ws/
 COPY --chown=$USERNAME ./examples ./src
 
@@ -130,8 +134,8 @@ RUN sudo apt-get update \
     && sudo rm -rf /var/lib/apt/lists/*
 
 RUN echo 'source /opt/ros/${ROS_DISTRO}/setup.zsh' >> ~/.zshrc
-RUN echo 'source ~/examples_ws/install/local.setup.zsh' >> ~/.zshrc
-RUN echo 'source ~/practices_ws/install/local.setup.zsh' >> ~/.zshrc
+RUN echo 'source ~/examples_ws/install/local_setup.zsh' >> ~/.zshrc
+RUN echo 'source ~/practices_ws/install/local_setup.zsh' >> ~/.zshrc
 
 
 

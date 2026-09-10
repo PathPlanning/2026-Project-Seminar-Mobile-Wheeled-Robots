@@ -23,7 +23,7 @@ services:
         required: true
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
-      - ${HOST_XAUTHORITY:?HOST_XAUTHORITY is not set}:${XAUTHORITY}:ro
+      - ${HOST_XAUTHORITY:?HOST_XAUTHORITY is not set}:${CONTAINER_XAUTHORITY}:ro
       - ./examples:/home/${USERNAME}/examples_ws/src/:rw
       - ./practices:/home/${USERNAME}/practices_ws/src/:rw
     command: sleep infinity
