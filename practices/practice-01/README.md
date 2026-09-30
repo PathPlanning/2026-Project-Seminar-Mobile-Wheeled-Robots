@@ -15,24 +15,12 @@ ROS2-пакет `digit_drawer` управляет двумя черепахам�
 
 Положение черепахи отслеживается через топик `/turtle_name/pose`, а управление движением выполняется через `/turtle_name/cmd_vel`.
 
-Завершение поворотов и прямолинейных участков определяется по данным о положении черепахи, а не по времени.
-
-## Сборка
-
-Из корня ROS2 workspace:
-
-```bash
-cd ~/practices_ws
-source /opt/ros/jazzy/setup.bash
-colcon build --packages-select digit_drawer
-source install/setup.bash
-```
-
 ## Запуск
 
 Запустить практическую работу:
 
 ```bash
+cd ~/practices_ws
 ros2 launch digit_drawer digit_drawer.launch.py
 ```
 
@@ -43,34 +31,6 @@ ros2 launch digit_drawer digit_drawer.launch.py
 3. создаются `turtle_0` и `turtle_7`;
 4. запускаются два экземпляра контроллера;
 5. черепахи рисуют цифры `0` и `7`.
-
-После завершения рисования контроллеры продолжают работать и публикуют нулевую скорость.
-
-## Диагностика ROS2
-
-Список узлов:
-
-```bash
-ros2 node list
-```
-
-Список топиков:
-
-```bash
-ros2 topic list
-```
-
-Список сервисов:
-
-```bash
-ros2 service list
-```
-
-Для визуализации связей между узлами:
-
-```bash
-rqt_graph
-```
 
 ## Структура пакета
 
