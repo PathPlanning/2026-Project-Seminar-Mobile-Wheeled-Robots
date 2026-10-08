@@ -85,12 +85,13 @@
 \small
 \begin{itemize}
   \item Модель описывает движение робота и позволяет прогнозировать его состояние, выбирать управление и оценивать перемещение.
-  \item Вектор состояния робота $\mathbf x$ включает в себя набор величин, которые описывают его положение в пространстве и внутреннюю конфигурация. Например: $\mathbf x = (p_x,p_y,\theta)$.
+  \item Вектор состояния робота $\mathbf x$ включает в себя набор величин, которые описывают его положение в пространстве и внутреннюю конфигурацию. Например: $\mathbf x = (p_x,p_y,\theta)$.
   \item Вектор управления $\mathbf u$ -- это набор величин, которые подаются на исполнительные механизмы робота для изменения его состояния. Например: $\mathbf u=(v,w)$.
 \end{itemize}
 \column{0.32\textwidth}
-\vspace{25pt}
-\todo{Вид сверху: мировые оси, оси корпуса, точка $(x,y)$, угол ${θ}$ и система координат датчика}
+\vfill
+	\includegraphics[width=0.99\columnwidth]{images/axis.png}
+  \vfill
 \end{columns}
 \end{frame}
 
@@ -100,19 +101,19 @@
 \column{0.65\textwidth}
 \small
 \begin{itemize}
-  \item Для описания сосотояния робота (обычно) используется неподвижная мировая система координат. 
+  \item Для описания состояния робота (обычно) используется неподвижная мировая система координат. 
   
   \item Выделяют систему координат корпуса робота, которая движется вместе с роботом. 
   
   \item Составные части робота (в том числе датчики) могут обладать своими системами координат.
 \end{itemize}
 \column{0.32\textwidth}
-\vspace{25pt}
-\todo{Вид сверху: мировые оси, оси корпуса, точка $(x,y)$, угол ${θ}$ и система координат датчика}
+\vfill
+	\includegraphics[width=0.99\columnwidth]{images/axis.png}
+  \vfill
 \end{columns}
 \end{frame}
 
-% Слайд 2
 \begin{frame}
 \frametitle{Прямая и обратная задача кинематики}
 \begin{columns}[T]
@@ -122,20 +123,30 @@
   \item По управлению определить изменение состояния робота.
 \end{itemize}
 \end{block}
-\vfill
-\todo{Схема }
 \column{0.47\textwidth}
 \begin{block}{Обратная задача кинематики}
 \begin{itemize}
-  \item По требуемой изменению состояния и времени копределить необходимые управления.
+  \item По требуемому изменению состояния и заданному времени определить необходимое управление.
 \end{itemize}
 \end{block}
-\vfill
-\todo{Схема}
 \end{columns}
+\vfill
+\begin{columns}[T]
+\column{0.49\textwidth}
+\centering
+\vfill
+	\includegraphics[height=1.5cm]{images/fwd_kin.png}
+  \vfill
+\column{0.49\textwidth}
+\centering
+\vfill
+	\includegraphics[height=1.5cm]{images/inv_kin.png}
+  \vfill
+\end{columns}
+
+
 \end{frame}
 
-% Слайд 3
 \begin{frame}
 \frametitle{Модель мобильного робота как динамическая система}
 \small
@@ -160,7 +171,6 @@
 
 \end{frame}
 
-% Слайд 4
 \begin{frame}
 \frametitle{Ограничения}
 \renewcommand{\arraystretch}{1.2}
@@ -178,27 +188,26 @@
 \begin{block}{Примеры явных ограничений}
 \begin{itemize}
   \item  $\|v\|\leq v_{\max}$, $\|w\|\leq w_{\max}$ -- ограничения на максимальные скорости
-  \item  $\|\dot v\|\leq a_{\max}$ -- ограничение на максиамльное ускорение 
+  \item  $\|\dot v\|\leq a_{\max}$ -- ограничение на максимальное ускорение 
 \end{itemize}
 
 \end{block}
 \end{frame}
 
-% Слайд 6
 \begin{frame}
 \frametitle{Неопределенность в модели}
 \begin{block}{Шум изменения состояния}
 \[
- \mathbf x_{k+1}=F(\mathbf x_k,\mathbf u_k)+\mathbf \varepsilon_k,
- \qquad \mathbf \varepsilon_k\sim\mathcal N( 0, \Sigma_k)
+ \mathbf x_{t+1}=F(\mathbf x_t,\mathbf u_t)+\mathbf \varepsilon_t,
+ \qquad \mathbf \varepsilon_t\sim\mathcal N( 0, \Sigma_t)
 \]
 \small
 Описывает ошибку шага модели. Позволяет учитывать разные причины, но параметры шума сложнее связать с физикой движения.
 \end{block}
 \begin{block}{Шум управления}
 \[
- \mathbf x_{k+1}=F(\mathbf x_k,\mathbf u_k+\varepsilon_k),
- \qquad \varepsilon_k\sim\mathcal N(0, \Sigma_k)
+ \mathbf x_{t+1}=F(\mathbf x_t,\mathbf u_t+\varepsilon_t),
+ \qquad \varepsilon_t\sim\mathcal N(0, \Sigma_t)
 \]
 \small
 Описывает ошибки исполнения управления. Их влияние на позу зависит от кинематики.
@@ -211,18 +220,12 @@
 
 \section{Модели движения колесных роботов}
 
-% Слайд 7
 \begin{frame}
 \frametitle{Виды колесных платформ}
 \begin{columns}[T]
 \column{0.47\textwidth}   
 
    
-% \begin{block}{Дифференциальный привод}
-% \small
-% Независимое вращение левого и правого колес. Поворот за счет разности скоростей.
-% \end{block}
-\todo{нужны картинки}
 \begingroup
 \setlength{\fboxrule}{0.4pt} % Толщина обводки
 \setlength{\fboxsep}{6pt}   % Внутренний отступ
@@ -232,7 +235,9 @@
     \begin{block}{Дифференциальный привод}
       \small
       Независимое вращение левого и правого колес.
-      Поворот за счет разности скоростей.
+\begin{center}
+    	\includegraphics[height=1.5cm]{images/turtlebot3.jpg}
+\end{center}
     \end{block}
   \end{minipage}%
 }
@@ -240,21 +245,31 @@
 
 \begin{block}{Omni-колеса}
 \small
-Свободные ролики на колесе и несколько направлений установки колес позволяют двигаться боком.
+Свободные ролики на колесе позволяют двигаться боком.
+\begin{center}
+  \includegraphics[height=1.5cm]{images/omni.jpg}\hspace{0.5 cm}
+  \includegraphics[height=1.5cm]{images/omni_ctrl.png}
+\end{center}
 \end{block}
 \column{0.47\textwidth}
 \begin{block}{Автомобильная платформа}
 \small
-Поворот за счет руления. Есть ограничение на минимальный радиус поворота.
+Поворот за счет руления. Есть минимальный радиус поворота.
+\begin{center}
+  \includegraphics[height=1.5cm]{images/car.png}
+\end{center}
 \end{block}
 \begin{block}{Колеса Mecanum}
 \small
-Наклонные ролики на колесе. При согласованном вращении колес платформа может двигаться боком.
+Наклонные ролики на колесе позволяют двигаться боком
+\begin{center}
+  \includegraphics[height=1.5cm]{images/mecanum.jpg}\hspace{0.5 cm}
+  \includegraphics[height=1.5cm]{images/mecanum_ctrl.jpg}
+\end{center}
 \end{block}
 \end{columns}
 \end{frame}
 
-% Слайд 8
 \begin{frame}
 \frametitle{Модель Single Integrator}
 \begin{columns}[T]
@@ -265,71 +280,76 @@
   \item Направление скорости может меняться мгновенно.
 \end{itemize}
 \[
- \mathbf p_{k+1}=\mathbf p_k+\mathbf u_k\Delta t \qquad \|\mathbf u\|\leq v_{\max}
+ \mathbf x_{t+1}=\mathbf x_t+\mathbf u_t\Delta t \qquad \|\mathbf u\|\leq v_{\max}
 \]
 \column{0.36\textwidth}
-\vspace{25pt}
-\todo{Картинка с кружочком и скоростью}
+\vfill
+  \includegraphics[width=\columnwidth]{images/si.png}
+\vfill
 \end{columns}
 \vfill
 Удобная абстракция для планирования, но не учитывает многих ограничений колесной платформы (ускорение, невозможность движения "боком" и т.д.).
 \end{frame}
 
-% Слайд 9
 \begin{frame}
 \frametitle{Модель Double Integrator}
 \begin{columns}[T]
-\column{0.64\textwidth}
+\column{0.6\textwidth}
 \begin{itemize}
   \item Состояние -- положение и скорость: $\mathbf x=(p_x, p_y, v_x, v_y)$.
   \item Управление -- ускорение $\mathbf u=(a_x,a_y)$ в мировой системе координат.
 \end{itemize}
 \[
  \begin{aligned}
- \mathbf p_{k+1}&=\mathbf p_k+\mathbf v_k \Delta t+\tfrac12\mathbf u_k \Delta t^2,\\
- \mathbf v_{k+1}&=\mathbf v_k+\mathbf u_k \Delta t
+ \mathbf x_{t+1}&=\mathbf x_t+\mathbf v_t \Delta t+\tfrac12\mathbf u_t \Delta t^2,\\
+ \mathbf v_{t+1}&=\mathbf v_t+\mathbf u_t \Delta t
  \end{aligned}
 \]
 \[
- \|\mathbf u_k\|\leq a_{\max},\qquad \|\mathbf v_k\|\leq v_{\max}
+ \|\mathbf u_t\|\leq a_{\max},\qquad \|\mathbf v_t\|\leq v_{\max}
 \]
-\column{0.32\textwidth}
-\vspace{25pt}
-\todo{Картинка с кружочком и скоростью}
+\column{0.36\textwidth}
+\vfill
+  \includegraphics[width=\columnwidth]{images/di.png}
+\vfill
 \end{columns}
 \vfill
-Учитывает ограничение на ускорение, но не описывает невозможность движение "боком".
+Учитывает ограничение на ускорение, но не описывает невозможность движения "боком".
 \end{frame}
 
-% Слайд 10
 \begin{frame}
 \frametitle{Модель Differential-drive}
 \begin{columns}[T]
-\column{0.55\textwidth}
+\column{0.6\textwidth}
 \small
 \begin{itemize}
   \item Два независимо приводимых в движение колеса радиуса $r$. Расстояние между колесами $L$.
   \item Состояние робота задается позицией середины оси колес и направлением $\mathbf x = (p_x, p_y, \theta)$ .
   \item Предполагается, что колеса движутся без продольного и бокового проскальзывания. Боковая скорость всегда равна нулю.
-  \item Движение через изменения угловой скорости колес $w_L$, $w_R$. Можно вычислить продольные скорости $v_L$, $v_R$ центров колес :
+  \item Движение задается изменением угловых скоростей колес $w_L$, $w_R$. Можно вычислить продольные скорости $v_L$, $v_R$ центров колес:
+  \[
+  v_L = r\cdot w_L,\quad v_R = r\cdot w_R
+  \]
 \end{itemize}
-\column{0.41\textwidth}
-\small
-\begin{itemize}
-  \item $w_L=w_R$: прямая.
-  \item $w_L \ne w_R$: дуга.
-  \item $w_L=-w_R\ne0$: вращение на месте.
-\end{itemize}
-\vspace{12pt}
-\todo{картинка со схемой робота}
+\column{0.35\textwidth}
+% \small
+% \begin{itemize}
+%   \item $w_L=w_R$: прямая.
+%   \item $w_L \ne w_R$: дуга.
+%   \item $w_L=-w_R\ne0$: вращение на месте.
+% \end{itemize}
+\vfill
+\begin{center}
+    \includegraphics[width=\columnwidth]{images/dd_wh.png}
+\end{center}
+\vfill
 \end{columns}
 \end{frame}
 
-% Слайд 11
 \begin{frame}
 \frametitle{Модель Differential-drive}
 \begin{columns}[T]
-\column{0.55\textwidth}
+\column{0.6\textwidth}
 \begin{itemize}
   \item Удобнее использовать для управления линейную и угловую скорости корпуса:
 
@@ -346,19 +366,21 @@
  \end{cases}
 \]
 \end{itemize}
-\column{0.41\textwidth}
-\small
-\begin{itemize}
-  \item $w_L=w_R$: прямая.
-  \item $w_L \ne w_R$: дуга.
-  \item $w_L=-w_R\ne0$: вращение на месте.
-\end{itemize}
-\vspace{12pt}
-\todo{картинка со схемой робота}
+\column{0.35\textwidth}
+% \small
+% \begin{itemize}
+%   \item $w_L=w_R$: прямая.
+%   \item $w_L \ne w_R$: дуга.
+%   \item $w_L=-w_R\ne0$: вращение на месте.
+% \end{itemize}
+\vfill
+\begin{center}
+    \includegraphics[width=\columnwidth]{images/dd_vel.png}
+\end{center}
+\vfill
 \end{columns}
 \end{frame}
 
-% Слайд 12
 \begin{frame}
 \frametitle{Модель Differential-drive}
 \begin{columns}[T]
@@ -367,14 +389,14 @@
 \begin{block}{Дискретная модель: метод Эйлера}
 \[
  \begin{cases}
- p_{x,k+1}=p_{x,k}+v_k\cos{\theta}_k \Delta t,\\
- p_{y,k+1}=p_{y,k}+v_k\sin{\theta}_k \Delta t,\\
- {\theta}_{k+1}={\theta}_k+w_k \Delta t
+ p_{x,k+1}=p_{x,k}+v_t\cos{\theta}_t \Delta t,\\
+ p_{y,k+1}=p_{y,k}+v_t\sin{\theta}_t \Delta t,\\
+ {\theta}_{t+1}={\theta}_t+w_t \Delta t
  \end{cases}
 \]
 \end{block}
-\begin{block}{Дискретная модель: мнгновенный центр вращения}
-Более точное вычисление -- через мнгновенный центр вращения (ICC):
+\begin{block}{Дискретная модель: мгновенный центр вращения}
+Более точное вычисление -- через мгновенный центр вращения (ICC):
 \[
  R = \frac v w = \frac{L}{2}\cdot\frac{w_R+w_L}{w_R-w_L}
 \]
@@ -384,13 +406,16 @@
 
 \end{block}
 \column{0.39\textwidth}
-\todo{картинка с ICC}
+\begin{center}
+    \vfill
+    \includegraphics[width=\columnwidth]{images/icc.jpg}
+    \vfill
+\end{center}
 \end{columns}
 \end{frame}
 
 \section{Оценка положения по модели}
 
-% Слайд 15
 \begin{frame}
 \frametitle{Оценка перемещения: Одометрия}
 \small
@@ -418,7 +443,6 @@
 \end{frame}
 
 
-% Слайд 17
 \begin{frame}
 \frametitle{Ошибки одометрии}
 \begin{itemize}
@@ -435,7 +459,7 @@
 \midrule
 Управление & Точное исполнение команд невозможно, никак не учитываются проскальзования изастревания робота\\
 Энкодеры & Измеряют вращение колес, но не обнаруживают проскальзывания. \\
-IMU & Погрешности измерений в угловых скоростях и ускорениях очень быстро накапливаются при интегрировании. \\
+IMU & Погрешности измерения угловых скоростей и ускорений очень быстро накапливаются при интегрировании. \\
 Камеры & Сильная зависимость от текстуры, освещения и движения объектов в среде, вычислительная сложность \\
 LiDAR & Сильная зависимость от наполнения среды, вычислительная сложность \\
 \bottomrule
@@ -444,9 +468,6 @@ LiDAR & Сильная зависимость от наполнения сред
 
 \section{ROS 2, ros2\_control и tf2}
 
-% Слайд 18. Источники: REP 103, ROS 2 Jazzy tf2 tutorials.
-% https://github.com/ros-infrastructure/rep/blob/master/rep-0103.rst
-% https://github.com/ros2/ros2_documentation/blob/jazzy/source/Tutorials/Intermediate/Tf2/Writing-A-Tf2-Static-Broadcaster-Py.rst
 \begin{frame}[fragile]
 \frametitle{Системы координат в ROS2}
 \begin{columns}[T]
@@ -454,19 +475,22 @@ LiDAR & Сильная зависимость от наполнения сред
 \small
 \begin{itemize}
   \item \cmd{tf2} -- библиотекав в ROS2, предназначенная для отслеживания, вычисления и хранения преобразований  между системами координат в виде дерева.
-  \item Лист дерева (frame) - конкретная система координат. 
+  \item Узел дерева (frame) - конкретная система координат. 
   \item Ребро дерева (transform) -- перенос и поворот дочерней системы относительно родительской.
-  \item Направление осей: $OX$ вперед, $OX$ влево, $OZ$ вверх (правая система).
+  \item Направление осей: $OX$ вперед, $OY$ влево, $OZ$ вверх (правая система).
   \item Единицы измерения: метры и радианы.
-  \item Поворот хранится кватернионами, но может задаваться через углы Эйлера.
+  \item Поворот представляется кватернионом, но может задаваться через углы Эйлера.
 \end{itemize}
-\column{0.36\textwidth}
-\vspace{20pt}
-\todo{схема дерева}
+\column{0.39\textwidth}
+\begin{center}
+    \vfill
+    \includegraphics[width=\columnwidth]{images/tree.png}
+    \vfill
+\end{center}
 \end{columns}
 \end{frame}
 
-% Слайд 19. Источник: https://github.com/ros-infrastructure/rep/blob/master/rep-0105.rst
+
 \begin{frame}
 \frametitle{Системы координат в ROS2}
 \begin{columns}[T]
@@ -475,27 +499,28 @@ LiDAR & Сильная зависимость от наполнения сред
 \begin{block}{Конвенция имен}
 \begin{itemize}
   \item \cmd{base\_link} -- система координат корпуса робота.
-  \item \cmd{base\_footprint} --  система координат проекцию корпуса на пол.
+  \item \cmd{base\_footprint} --  система координат проекции корпуса на пол.
   \item \cmd{odom} -- система координат точки начала движения.
   \item \cmd{map} -- система координат карты.
-  \item Системы координати колес и датчиков дочерние к \cmd{base\_link}.
-  \item   Одометрия задает \cmd{odom} $\to$ \cmd{base\_link}, локализация задает \cmd{map} $\to$ \cmd{odom}.
+  \item Системы координат колес и датчиков — дочерние по отношению к \cmd{base\_link}.
+  \item   Одометрия задает \cmd{odom} $\to$ \cmd{base\_link} или \cmd{base\_footprint}, локализация задает \cmd{map} $\to$ \cmd{odom}.
 \end{itemize}
 \end{block}
-\column{0.36\textwidth}
-\vspace{15pt}
-\todo{схема дерева}
+\column{0.39\textwidth}
+\begin{center}
+    \vfill
+    \includegraphics[width=\columnwidth]{images/tree.png}
+    \vfill
+\end{center}
 \end{columns}
 \end{frame}
 
-% Слайд 20. Источник: ROS 2 Jazzy tf2 listener tutorial.
-% https://github.com/ros2/ros2_documentation/blob/jazzy/source/Tutorials/Intermediate/Tf2/Writing-A-Tf2-Listener-Py.rst
 \begin{frame}[fragile]
 \frametitle{Системы координат в ROS2}
 \small
 \begin{itemize}
   \item Передача информации о преобразованиях происходит через публикации в специальных топиках
-    \item Преобразования деляться на статические (топик \cmd{/tf\_static}) и динамические  с временными метками (топик \cmd{/tf}).
+    \item Преобразования делятся на статические (топик \cmd{/tf\_static}) и динамические  с временными метками (топик \cmd{/tf}).
   \item Объект \cmd{Buffer} хранит преобразования, \cmd{TransformListener} получает, \cmd{TransformBroadcaster} публикует.
   \item Методы \cmd{lookup\_transform} и \cmd{transform} используются для преобразований.
 \end{itemize}
@@ -543,7 +568,7 @@ point_base = self.tf_buffer.transform(point, 'base_link')
 
 & \cmd{joint\_state\_broadcaster}
 & Чтение состояния суставов робота из аппаратного интерфейса
-  и публикация в формате \cmd{joint\_states} \\
+  и публикация в топике \cmd{/joint\_states} \\
 \midrule
 
 \multicolumn{2}{c}{
@@ -560,15 +585,13 @@ point_base = self.tf_buffer.transform(point, 'base_link')
 \frametitle{Управление роботом в ROS2}
 \vfill
 \begin{center}
-\begin{minipage}{0.91\textwidth}
-\todo{Единая схема}
+\begin{minipage}{0.95\textwidth}
+\includegraphics[width=\columnwidth]{images/pipeline.png}
 \end{minipage}
 \end{center}
 \vfill
 \end{frame}
 
-
-% Слайд 23. Источник: https://github.com/ros2/common_interfaces/blob/rolling/nav_msgs/msg/Odometry.msg
 \begin{frame}[fragile]
 \frametitle{Одометрия в ROS2}
 \small
@@ -596,8 +619,8 @@ ros2 run tf2_ros tf2_echo odom base_link
 \small
 \begin{itemize}
   \item \cmd{tf2\_echo} -- посмотреть отдельное преобразование.
-  \item \cmd{tf2\_tools view\_frames} -- дерево преобразований систем координат, 
-  \item \cmd{RViz2} -- визуализация модели робота, TF, карты, данных датчиков и д.р. в 3D
+  \item \cmd{tf2\_tools view\_frames} -- дерево преобразований систем координат. 
+  \item \cmd{RViz2} -- визуализация модели робота, TF, карты, данных датчиков и др. в 3D.
   \item \cmd{Foxglove} -- 3D-сцена, графики,  просмотр сообщений, просмотр дерева преобразований и многое другое.
 \end{itemize}
 \vfill
