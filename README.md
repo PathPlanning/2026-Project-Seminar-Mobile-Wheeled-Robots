@@ -17,6 +17,7 @@
 ├── docker-compose.gpu.yaml        # Доступ к GPU через /dev/dri
 ├── docker-compose.nvidia.yaml     # Доступ к NVIDIA GPU
 ├── docker-compose.webots-mac.yaml # Связь с Webots на macOS из Linux VM
+├── docker-compose.webots-linux.yaml # Запуск Webots из контейнера на Linux
 ├── .env                           # Общие настройки среды
 ├── .env.local                     # Локальные настройки (необходимо создать самостоятельно)
 ├── doc/                           # Дополнительные инструкции, в том числе для UTM на macOS
@@ -103,6 +104,8 @@ test -f "$XAUTHORITY" && printf 'XAUTHORITY=%s\n' "$XAUTHORITY"
 
 ## Сборка среды
 
+
+### Сборка базовой среды с ROS2
 Сборка образа осуществляется командой:
 ```bash
 HOST_XAUTHORITY="$XAUTHORITY" docker compose --env-file .env --env-file .env.local -f docker-compose.yaml -f docker-compose.gpu.yaml [-f docker-compose.nvidia.yaml] build
@@ -110,8 +113,38 @@ HOST_XAUTHORITY="$XAUTHORITY" docker compose --env-file .env --env-file .env.loc
 ```
 Первая сборка скачивает ROS 2 и много зависимостей, поэтому может занять значительное время. Во время сборки образа примеры автоматически собираются через `colcon`.
 
+### Сборка среды с ROS2 и Webots
+
+**Linux**
+
+Для установки Webots внутрь контейнера добавьте файл `docker-compose.webots-linux.yaml` во время сборки образа:
+
+```bash
+HOST_XAUTHORITY="$XAUTHORITY" docker compose --env-file .env --env-file .env.local -f docker-compose.yaml -f docker-compose.gpu.yaml -f docker-compose.webots-linux.yaml [-f docker-compose.nvidia.yaml] build
+```
+
+> [!IMPORTANT]
+> Этот вариант сборки поддерживает только архитектуру `amd64`.
+
+> [!IMPORTANT]
+> Квадратные скобки в командах обозначают необязательный аргумент. Для NVIDIA подставьте `-f docker-compose.nvidia.yaml` без скобок, в остальных случаях удалите весь фрагмент в скобках.
+
+**macOS**
+
+На Mac среда с ROS2 запускается в Docker внутри Ubuntu в UTM, а Webots устанавливается непосредственно в macOS. Установите [Webots R2025a](https://github.com/cyberbotics/webots/releases/tag/R2025a) в `/Applications/Webots.app` и настройте общую папку по [инструкции](doc/webots_macos_shared_folder.md), включая переменные в `.env.local`.
+
+В Ubuntu внутри виртуальной машины выполните:
+
+```bash
+HOST_XAUTHORITY="$XAUTHORITY" docker compose --env-file .env --env-file .env.local -f docker-compose.yaml -f docker-compose.gpu.yaml -f docker-compose.webots-mac.yaml build
+```
+
+Файл `docker-compose.webots-linux.yaml` для этого варианта не используется и не должен быть включен при сборке. Его включение может привести к ошибке сборки.
+
 
 ## Запуск среды
+
+### Запуск базовой среды с ROS2
 
 Для запуска контейнера выполните команду:
 
@@ -127,6 +160,50 @@ HOST_XAUTHORITY="$XAUTHORITY" docker compose --env-file .env --env-file .env.loc
 
 
 В `zsh` окружение ROS2 и собранных примеров подключается автоматически. Для каждого дополнительного терминала повторите команду `exec`. Команда `exit` закрывает оболочку, но оставляет контейнер работающим.
+
+### Запуск среды с ROS2 и Webots
+
+
+**Linux**
+
+Для запуска контейнера с установленным Webots выполните:
+
+```bash
+HOST_XAUTHORITY="$XAUTHORITY" docker compose --env-file .env --env-file .env.local -f docker-compose.yaml -f docker-compose.gpu.yaml -f docker-compose.webots-linux.yaml [-f docker-compose.nvidia.yaml] up -d
+
+HOST_XAUTHORITY="$XAUTHORITY" docker compose --env-file .env --env-file .env.local -f docker-compose.yaml -f docker-compose.gpu.yaml -f docker-compose.webots-linux.yaml [-f docker-compose.nvidia.yaml] exec -it ros2-base zsh
+```
+
+> [!IMPORTANT]
+> Квадратные скобки в командах обозначают необязательный аргумент. Для NVIDIA подставьте `-f docker-compose.nvidia.yaml` без скобок, в остальных случаях удалите весь фрагмент в скобках.
+
+**macOS**
+
+Перед запуском контейнера проверьте, что общая папка смонтирована в Ubuntu и доступна для записи (см. [инструкцию](doc/webots_macos_shared_folder.md)).
+
+На **macOS** скачайте [скрипт-сервер запуска Webots](https://github.com/cyberbotics/webots-server/blob/main/local_simulation_server.py) и запустите его в терминале:
+
+```bash
+export WEBOTS_HOME=/Applications/Webots.app
+python3 local_simulation_server.py
+```
+
+Для этой команды требуется установленный Python 3. Оставьте терминал открытым: сервер ожидает подключения на порту `2000` и запускает Webots по запросу из контейнера.
+
+В терминале **Ubuntu внутри UTM**, из корня репозитория, выполните:
+
+```bash
+HOST_XAUTHORITY="$XAUTHORITY" docker compose --env-file .env --env-file .env.local -f docker-compose.yaml -f docker-compose.gpu.yaml -f docker-compose.webots-mac.yaml up -d
+
+HOST_XAUTHORITY="$XAUTHORITY" docker compose --env-file .env --env-file .env.local -f docker-compose.yaml -f docker-compose.gpu.yaml -f docker-compose.webots-mac.yaml exec -it ros2-base zsh
+```
+
+Контейнер получает переменную `WEBOTS_SHARED_FOLDER` и IP-адрес Mac из `docker-compose.webots-mac.yaml`. Если соединение не устанавливается, проверьте `MAC_HOST_IP` в `.env.local` и доступность портов `2000` (сервер запуска) и `1234` (контроллеры Webots) с виртуальной машины.
+
+В обоих вариантах окно Webots открывается при запуске примера из раздела ниже. Для каждого дополнительного терминала повторите соответствующую команду `exec`. При остановке, повторном запуске и удалении контейнера используйте тот же набор файлов Compose, что и при сборке и запуске.
+
+
+
 
 ### Изменение кода
 
@@ -146,13 +223,13 @@ HOST_XAUTHORITY="$XAUTHORITY" docker compose --env-file .env --env-file .env.loc
 
 ```bash
 # Остановить контейнер
-HOST_XAUTHORITY="$XAUTHORITY" docker compose --env-file .env --env-file .env.local -f docker-compose.yaml -f docker-compose.gpu.yaml [-f docker-compose.nvidia.yaml] stop
+HOST_XAUTHORITY="$XAUTHORITY" docker compose --env-file .env --env-file .env.local -f docker-compose.yaml -f docker-compose.gpu.yaml [-f docker-compose.nvidia.yaml -f docker-compose.webots-mac.yaml -f docker-compose.webots-linux.yaml] stop
 
 # Запустить остановленный контейнер
-HOST_XAUTHORITY="$XAUTHORITY" docker compose --env-file .env --env-file .env.local -f docker-compose.yaml -f docker-compose.gpu.yaml [-f docker-compose.nvidia.yaml] start
+HOST_XAUTHORITY="$XAUTHORITY" docker compose --env-file .env --env-file .env.local -f docker-compose.yaml -f docker-compose.gpu.yaml [-f docker-compose.nvidia.yaml -f docker-compose.webots-mac.yaml -f docker-compose.webots-linux.yaml] start
 
 # Остановить и удалить контейнер
-HOST_XAUTHORITY="$XAUTHORITY" docker compose --env-file .env --env-file .env.local -f docker-compose.yaml -f docker-compose.gpu.yaml [-f docker-compose.nvidia.yaml] down
+HOST_XAUTHORITY="$XAUTHORITY" docker compose --env-file .env --env-file .env.local -f docker-compose.yaml -f docker-compose.gpu.yaml [-f docker-compose.nvidia.yaml -f docker-compose.webots-mac.yaml -f docker-compose.webots-linux.yaml] down
 ```
 
 
@@ -209,3 +286,34 @@ ros2 launch example_turtlesim nav2goal.launch.py
 Черепашка `turtle2` движется из начальной позиции к точке `(2, 8)`.
 
 Запускайте эти два launch-файла по очереди: они используют одинаковые имена узлов, сервисов и топиков.
+
+
+### Пример с Turtlebot3 в Webots
+
+На Linux откройте терминал контейнера. На Mac сначала запустите сервер Webots в macOS, затем откройте терминал контейнера, как описано выше.
+
+Внутри контейнера запустите пример из репозитория:
+
+```bash
+ros2 launch example_webots spawn_robot.launch.py
+```
+
+Launch-файл открывает мир `my_world.wbt` с роботом TurtleBot3 Burger и препятствием, запускает драйвер робота и контроллеры колес. На Linux окно симулятора открывается на рабочем столе Linux-хоста, на Mac — в macOS.
+
+Дождитесь загрузки мира и запуска контроллеров. Во втором терминале контейнера выполните:
+
+```bash
+ros2 topic pub -r 10 /cmd_vel geometry_msgs/msg/TwistStamped "{header: {stamp: {sec: 0, nanosec: 0}, frame_id: 'base_link'}, twist: {linear: {x: 0.1, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.2}}}"
+```
+
+Команда публикует команду скорости для робота с частотой 10 Гц: робот должен начать двигаться с линейной скоростью `0.1` м/с и угловой скоростью `0.2` рад/с. 
+
+Пример окна с запущенным миром и роботом:
+
+![Окно Webots](img/webots.png)
+
+Предупреждения о несоответствии версий и дургие Warning можно игнорировать.
+
+Чтобы остановить публикацию, нажмите `Ctrl+C` во втором терминале.
+
+Для завершения примера нажмите `Ctrl+C` в терминале с launch-файлом. На Mac сервер запуска остается ожидать следующий запуск; его можно остановить через `Ctrl+C` в терминале macOS.

@@ -1,0 +1,9 @@
+services:
+  ros2-base:
+    build:
+      args:
+        INSTALL_WEBOTS: "true"
+        WEBOTS_VERSION: ${WEBOTS_VERSION:-2025a}
+
+    environment:
+      WEBOTS_HOME: /usr/local/webots

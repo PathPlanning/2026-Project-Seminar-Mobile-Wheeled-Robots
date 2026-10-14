@@ -86,6 +86,24 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 
+ARG INSTALL_WEBOTS=false
+ARG WEBOTS_VERSION=2025a
+
+RUN if [ "${INSTALL_WEBOTS}" = "true" ]; then \
+        if [ "$(dpkg --print-architecture)" != "amd64" ]; then \
+            echo "This Webots package requires amd64" >&2; \
+            exit 1; \
+        fi; \
+        wget -q \
+            "https://github.com/cyberbotics/webots/releases/download/R${WEBOTS_VERSION}/webots_${WEBOTS_VERSION}_amd64.deb" \
+            -O /tmp/webots.deb \
+        && apt-get update \
+        && apt-get install -y --no-install-recommends /tmp/webots.deb \
+        && rm -f /tmp/webots.deb \
+        && rm -rf /var/lib/apt/lists/*; \
+    fi
+
+
 RUN userdel -r ubuntu; 
 RUN groupadd --gid $GROUP_ID $USERNAME \
     && useradd --uid ${USER_ID} --gid ${GROUP_ID} --create-home --shell /bin/zsh ${USERNAME}
@@ -93,6 +111,9 @@ RUN groupadd --gid $GROUP_ID $USERNAME \
 RUN echo ${USERNAME} ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/${USERNAME} \
     && chmod 0440 /etc/sudoers.d/${USERNAME} \
     && chown -R ${USER_ID}:${GROUP_ID} /home/${USERNAME}
+
+
+
 
 USER ${USERNAME}
 
