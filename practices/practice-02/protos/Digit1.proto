@@ -1,3 +1,5 @@
+#VRML_SIM R2025a utf8
+
 PROTO Digit1 [
   field SFVec3f translation 0 0 0
   field SFRotation rotation 0 0 1 0
