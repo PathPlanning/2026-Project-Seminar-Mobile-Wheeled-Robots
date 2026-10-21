@@ -1,0 +1,134 @@
+PROTO Digit5 [
+  field SFVec3f translation 0 0 0
+  field SFRotation rotation 0 0 1 0
+  field SFColor color 0.5 0.5 0.5
+  field SFString name "digit5"
+]
+{
+  Solid {
+    translation IS translation
+    rotation IS rotation
+    name IS name
+    children [
+    Transform {
+      translation 0.80 0.00 0.20
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor IS color
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.40 1.20 0.40
+          }
+        }
+      ]
+    }
+    Transform {
+      translation 0.40 0.40 0.20
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor IS color
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.40 0.40 0.40
+          }
+        }
+      ]
+    }
+    Transform {
+      translation 0.00 0.00 0.20
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor IS color
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.40 1.20 0.40
+          }
+        }
+      ]
+    }
+    Transform {
+      translation -0.40 -0.40 0.20
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor IS color
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.40 0.40 0.40
+          }
+        }
+      ]
+    }
+    Transform {
+      translation -0.80 0.00 0.20
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor IS color
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.40 1.20 0.40
+          }
+        }
+      ]
+    }
+    ]
+    boundingObject Group {
+      children [
+      Transform {
+        translation 0.80 0.00 0.20
+        children [
+          Box {
+            size 0.40 1.20 0.40
+          }
+        ]
+      }
+      Transform {
+        translation 0.40 0.40 0.20
+        children [
+          Box {
+            size 0.40 0.40 0.40
+          }
+        ]
+      }
+      Transform {
+        translation 0.00 0.00 0.20
+        children [
+          Box {
+            size 0.40 1.20 0.40
+          }
+        ]
+      }
+      Transform {
+        translation -0.40 -0.40 0.20
+        children [
+          Box {
+            size 0.40 0.40 0.40
+          }
+        ]
+      }
+      Transform {
+        translation -0.80 0.00 0.20
+        children [
+          Box {
+            size 0.40 1.20 0.40
+          }
+        ]
+      }
+      ]
+    }
+  }
+}
