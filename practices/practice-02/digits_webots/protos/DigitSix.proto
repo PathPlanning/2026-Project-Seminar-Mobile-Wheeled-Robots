@@ -1,0 +1,120 @@
+#VRML_SIM R2025a utf8
+
+PROTO DigitSix [
+  field SFVec3f translation 0 0 0
+  field SFRotation rotation 0 0 1 0
+  field SFColor color 0.5 0.5 0.5
+  field SFString name "digit_6"
+]
+{
+  Solid {
+    translation IS translation
+    rotation IS rotation
+    name IS name
+    children [
+      Transform {
+        translation 0 0.725 0.15
+        children [
+          Shape {
+            appearance DEF GRAY PBRAppearance {
+              baseColor IS color
+              roughness 0.9
+              metalness 0
+            }
+            geometry Box {
+              size 1 0.25 0.3
+            }
+          }
+        ]
+      }
+      Transform {
+        translation 0 -0.725 0.15
+        children [
+          Shape {
+            appearance USE GRAY
+            geometry Box {
+              size 1 0.25 0.3
+            }
+          }
+        ]
+      }
+      Transform {
+        translation -0.375 0 0.15
+        children [
+          Shape {
+            appearance USE GRAY
+            geometry Box {
+              size 0.25 1.2 0.3
+            }
+          }
+        ]
+      }
+      Transform {
+        translation 0.125 0 0.15
+        children [
+          Shape {
+            appearance USE GRAY
+            geometry Box {
+              size 0.75 0.25 0.3
+            }
+          }
+        ]
+      }
+      Transform {
+        translation 0.375 -0.3625 0.15
+        children [
+          Shape {
+            appearance USE GRAY
+            geometry Box {
+              size 0.25 0.475 0.3
+            }
+          }
+        ]
+      }
+    ]
+    boundingObject Group {
+      children [
+        Transform {
+          translation 0 0.725 0.15
+          children [
+            Box {
+              size 1 0.25 0.3
+            }
+          ]
+        }
+        Transform {
+          translation 0 -0.725 0.15
+          children [
+            Box {
+              size 1 0.25 0.3
+            }
+          ]
+        }
+        Transform {
+          translation -0.375 0 0.15
+          children [
+            Box {
+              size 0.25 1.2 0.3
+            }
+          ]
+        }
+        Transform {
+          translation 0.125 0 0.15
+          children [
+            Box {
+              size 0.75 0.25 0.3
+            }
+          ]
+        }
+        Transform {
+          translation 0.375 -0.3625 0.15
+          children [
+            Box {
+              size 0.25 0.475 0.3
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
