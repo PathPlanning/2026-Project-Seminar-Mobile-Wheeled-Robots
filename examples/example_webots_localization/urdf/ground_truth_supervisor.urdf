@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<robot name="ground_truth_supervisor">
+  <webots>
+    <plugin type="example_webots_localization.ground_truth.GroundTruth"/>
+  </webots>
+</robot>
