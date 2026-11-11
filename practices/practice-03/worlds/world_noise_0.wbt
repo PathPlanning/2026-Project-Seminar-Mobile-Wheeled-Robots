@@ -1,0 +1,55 @@
+#VRML_SIM R2025a utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/floors/protos/RectangleArena.proto"
+EXTERNPROTO "../protos/TurtleBot3Burger.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/devices/robotis/protos/RobotisLds01.proto"
+
+WorldInfo {
+  coordinateSystem "ENU"
+}
+Viewpoint {
+  orientation 0 1 0 1.5707963267948966
+  position 0 0 9
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+
+RectangleArena {
+  translation 0.0 0.0 0.0
+  floorSize 6 6
+  wallThickness 0.03
+  wallHeight 0.5
+  floorTileSize 0.7 0.7
+}
+
+DEF TURTLEBOT TurtleBot3Burger {
+  translation 1 0 0
+  rotation 0 0 1 1.5707963267948966
+  encoderNoise 0
+  controller "<extern>"
+  controllerArgs [
+    ""
+  ]
+  extensionSlot [
+    Solid {
+      name "imu_link"
+    }
+    GPS {
+    }
+    InertialUnit {
+      name "inertial_unit"
+    }
+    RobotisLds01 {
+    }
+  ]
+}
+
+Robot {
+  name "ground_truth_supervisor"
+  controller "<extern>"
+  supervisor TRUE
+}
